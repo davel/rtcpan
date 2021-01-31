@@ -1,3 +1,3 @@
 [submodule "rt.cpan.org"]
-	path = rt.cpan.org
+	path = rtcpan/rt.cpan.org
 	url = git@github.com:davel/rt.cpan.org
