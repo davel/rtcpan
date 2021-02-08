@@ -108,10 +108,41 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
 	libgd-text-perl \
 	\
 	libconvert-color-perl \
-	libpod-simple-perl
+	libpod-simple-perl \
 #	libhtml-entities-perl
+    \
+    libsymbol-global-name-perl \
+    libnet-oauth2-perl \
+    libnet-openid-consumer-perl \
+    \
+    nginx \
+    spawn-fcgi \
+    perl-doc \
+    cpanminus \
+    libnet-dns-perl \
+    libtest-requires-perl \
+    make
 
 
 COPY rt.cpan.org /home/rtcpan/rt
 
-CMD sudo -u rtcpan /home/rtcpan/rt/sbin/rt-server --port 8080
+COPY nginx_site /etc/nginx/sites-enabled/default
+COPY run-rt /usr/local/sbin/run-rt
+
+COPY LWP-UserAgent-Paranoid-0.97.tar.gz /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+COPY Net-DNS-Paranoid-0.08.tar.gz       /root/Net-DNS-Paranoid-0.08.tar.gz
+COPY LWPx-ParanoidHandler-0.07.tar.gz   /root/LWPx-ParanoidHandler-0.07.tar.gz
+
+RUN cpanm --notest /root/Net-DNS-Paranoid-0.08.tar.gz
+RUN rm    /root/Net-DNS-Paranoid-0.08.tar.gz
+
+RUN cpanm /root/LWPx-ParanoidHandler-0.07.tar.gz
+RUN rm    /root/LWPx-ParanoidHandler-0.07.tar.gz
+
+RUN cpanm /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+RUN rm    /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+
+RUN mkdir -p /home/rtcpan/rt/var/log
+RUN chown -R rtcpan:rtcpan /home/rtcpan/rt/var/
+
+CMD /usr/local/sbin/run-rt

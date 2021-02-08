@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+# vim:ts=4:shiftwidth=4:expandtab:smartindent
+
+# ABSTRACT: Boots up fcgi code and nginx.
+
+# Contemporary RT docs only recommend fcgi for production deployment, rather
+# than reproxying, so we use that. nginx and worker code wrapped in the same
+# image to keep both with the static content.
+
+use strict;
+use warnings;
+
+my $nproc = $ENV{FCGI_WORKERS} // 1;
+
+die "bad nproc" unless $nproc =~ /^[0-9]+$/;
+
+use IO::Socket::INET;
+use POSIX ":sys_wait_h";
+
+my $fcgi_pid = fork() // die $!;
+
+if (!$fcgi_pid) {
+    exec("spawn-fcgi",
+        "-u" => "rtcpan",
+        "-g" => "rtcpan",
+        "-a" => "127.0.0.1",
+        "-p" => "9000",
+        "-d" => "/",
+        "-n",
+        "--",
+        "/home/rtcpan/rt/sbin/rt-server.fcgi",
+#        "--nproc" => $nproc,
+    ) || die "our exec failed: $!";
+    die;
+}
+
+while (1) {
+    my $conn = IO::Socket::INET->new(
+        PeerAddr => "127.0.0.1",
+        PeerPort => 9000,    
+        Proto => "tcp", 
+    );
+    last if $conn;
+    if (waitpid($fcgi_pid, WNOHANG)>0) {
+        die "FCGI worker did not come up";
+    }
+    sleep 1;
+    print STDERR "Waiting for fcgi pid $fcgi_pid...\n";
+}
+
+exec("/usr/sbin/nginx", "-g", "daemon off;") || die $!;
+die;
