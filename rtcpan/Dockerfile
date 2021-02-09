@@ -112,6 +112,8 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
 #	libhtml-entities-perl
     \
     libsymbol-global-name-perl \
+    liblist-compare-perl \
+    libcpan-distnameinfo-perl \
     libnet-oauth2-perl \
     libnet-openid-consumer-perl \
     \
@@ -123,11 +125,6 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     libtest-requires-perl \
     make
 
-
-COPY rt.cpan.org /home/rtcpan/rt
-
-COPY nginx_site /etc/nginx/sites-enabled/default
-COPY run-rt /usr/local/sbin/run-rt
 
 COPY LWP-UserAgent-Paranoid-0.97.tar.gz /root/LWP-UserAgent-Paranoid-0.97.tar.gz
 COPY Net-DNS-Paranoid-0.08.tar.gz       /root/Net-DNS-Paranoid-0.08.tar.gz
@@ -142,7 +139,17 @@ RUN rm    /root/LWPx-ParanoidHandler-0.07.tar.gz
 RUN cpanm /root/LWP-UserAgent-Paranoid-0.97.tar.gz
 RUN rm    /root/LWP-UserAgent-Paranoid-0.97.tar.gz
 
+COPY rt.cpan.org /home/rtcpan/rt
+
 RUN mkdir -p /home/rtcpan/rt/var/log
+RUN mkdir -p /home/rtcpan/rt/var/lib/cpan2rt
+
 RUN chown -R rtcpan:rtcpan /home/rtcpan/rt/var/
+
+
+COPY nginx_site /etc/nginx/sites-enabled/default
+COPY run-rt /usr/local/sbin/run-rt
+
+RUN ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-bundle.crt
 
 CMD /usr/local/sbin/run-rt
