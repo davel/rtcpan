@@ -5,9 +5,8 @@ RUN useradd --system -m rtcpan
 RUN echo "tzdata tzdata/Areas select Europe"        | debconf-set-selections
 RUN echo "tzdata tzdata/Zones/Europe select London" | debconf-set-selections
 
-RUN apt-get update
 ENV TZ Europe/London
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
 	libclass-accessor-perl \
 	libdatetime-perl \
 	libdatetime-locale-perl \
@@ -116,6 +115,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     libcpan-distnameinfo-perl \
     libnet-oauth2-perl \
     libnet-openid-consumer-perl \
+    libtemplate-perl \
     \
     nginx \
     spawn-fcgi \
@@ -147,8 +147,10 @@ RUN mkdir -p /home/rtcpan/rt/var/lib/cpan2rt
 RUN chown -R rtcpan:rtcpan /home/rtcpan/rt/var/
 
 
-COPY nginx_site /etc/nginx/sites-enabled/default
+COPY nginx_site.tt /root/tt/nginx_site.tt
 COPY run-rt /usr/local/sbin/run-rt
+
+RUN mkdir -p /etc/rt
 
 RUN ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-bundle.crt
 

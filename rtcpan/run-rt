@@ -10,12 +10,29 @@
 use strict;
 use warnings;
 
-my $nproc = $ENV{FCGI_WORKERS} // 1;
+use IO::Socket::INET;
+use POSIX ":sys_wait_h";
+use Template;
+
+my $nproc =    $ENV{FCGI_WORKERS} // 1;
+my $hostname = $ENV{RT_HOSTNAME} // "rt.cpan.org";
 
 die "bad nproc" unless $nproc =~ /^[0-9]+$/;
 
-use IO::Socket::INET;
-use POSIX ":sys_wait_h";
+my $tt = Template->new({ INCLUDE_PATH => "/root/tt" });
+
+open(my $fh_nginx, ">", "/etc/nginx/sites-enabled/default") or die $!;
+
+$tt->process("nginx_site.tt", {
+    hostname => $hostname,
+}, $fh_nginx) or die $tt->error;
+close $fh_nginx;
+
+if (@ARGV) {
+    print STDERR "Invoking $ARGV[0]\n";
+    exec(@ARGV) || die $!;
+    die;
+}
 
 my $fcgi_pid = fork() // die $!;
 
@@ -47,6 +64,8 @@ while (1) {
     sleep 1;
     print STDERR "Waiting for fcgi pid $fcgi_pid...\n";
 }
+
+print STDERR "fcgi started, running nginx.\n";
 
 exec("/usr/sbin/nginx", "-g", "daemon off;") || die $!;
 die;

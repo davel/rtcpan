@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name rt.cpan.org;
+    server_name [% hostname %];
 
     location / {
         fastcgi_param  QUERY_STRING       $query_string;
