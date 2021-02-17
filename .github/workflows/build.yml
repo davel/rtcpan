@@ -25,10 +25,34 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       -
-        name: Build and push
+        name: rtcpan
         uses: docker/build-push-action@v2
         with:
           context: rtcpan/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: davel/rtcpan:latest
+          tags: ghcr.io/davel/rtcpan:latest
+      -
+        name: rtperl
+        uses: docker/build-push-action@v2
+        with:
+          context: rtperl/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/davel/rtperl:latest
+      -
+        name: rtfrontend
+        uses: docker/build-push-action@v2
+        with:
+          context: rtfrontend/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/davel/rtfrontend:latest
+      -
+        name: rtapp
+        uses: docker/build-push-action@v2
+        with:
+          context: rtapp/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/davel/rtapp:latest
