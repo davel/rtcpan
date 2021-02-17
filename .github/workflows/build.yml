@@ -10,12 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build image rtcpan
-        run: docker build rtcpan --file Dockerfile --tag rtcpan
+        run: docker build ./rtcpan --file Dockerfile --tag rtcpan
       - name: Build image rtperl
-        run: docker build rtperl --file Dockerfile --tag rtperl
+        run: docker build ./rtperl --file Dockerfile --tag rtperl
       - name: Build image rtfrontend
-        run: docker build rtfrontend --file Dockerfile --tag rtfrontend
+        run: docker build ./rtfrontend --file Dockerfile --tag rtfrontend
       - name: Build image rtapp
-        run: docker build rtapp --file Dockerfile --tag rtapp
+        run: docker build ./rtapp --file Dockerfile --tag rtapp
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
