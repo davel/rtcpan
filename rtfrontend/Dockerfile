@@ -1,0 +1,12 @@
+FROM rtcpan
+
+
+RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y nginx libtemplate-perl
+
+COPY nginx_site.tt /root/tt/nginx_site.tt
+COPY run-nginx /usr/local/sbin/run-nginx
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
+
+CMD /usr/local/sbin/run-nginx

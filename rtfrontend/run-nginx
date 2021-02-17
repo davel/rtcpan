@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+# vim:ts=4:shiftwidth=4:expandtab:smartindent
+
+# ABSTRACT: Boots up nginx.
+
+# Contemporary RT docs only recommend fcgi for production deployment, rather
+# than reproxying, so we use that.
+
+use strict;
+use warnings;
+
+use Template;
+
+my $hostname = $ENV{RT_HOSTNAME} // "rt.cpan.org";
+my $app      = $ENV{RT_APP_HOST} // die "missing RT_APP_HOST";
+
+my $tt = Template->new({ INCLUDE_PATH => "/root/tt" });
+
+open(my $fh_nginx, ">", "/etc/nginx/sites-enabled/default") or die $!;
+
+$tt->process("nginx_site.tt", {
+    hostname    => $hostname,
+    rt_app_host => $app,
+}, $fh_nginx) or die $tt->error;
+close $fh_nginx;
+
+exec("/usr/sbin/nginx", "-g", "daemon off;") || die $!;
+die;

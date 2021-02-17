@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+# vim:ts=4:shiftwidth=4:expandtab:smartindent
+
+# ABSTRACT: Boots up fcgi code.
+
+# Contemporary RT docs only recommend fcgi for production deployment, rather
+# than reproxying, so we use that.
+
+use strict;
+use warnings;
+
+my $nproc = $ENV{FCGI_WORKERS} // 1;
+
+exec("spawn-fcgi",
+    "-u" => "rtcpan",
+    "-g" => "rtcpan",
+    "-a" => "127.0.0.1",
+    "-p" => "9000",
+    "-d" => "/",
+    "-n",
+    "--",
+    "/home/rtcpan/rt/sbin/rt-server.fcgi",
+    "--nproc" => $nproc,
+    "--keep-stderr",
+) || die "our exec failed: $!";
+die;
+

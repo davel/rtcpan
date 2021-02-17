@@ -1,0 +1,139 @@
+FROM rtcpan
+
+RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
+	libclass-accessor-perl \
+	libdatetime-perl \
+	libdatetime-locale-perl \
+	libdigest-md5-perl \
+	libdigest-sha-perl \
+	libdbi-perl \
+	libclass-returnvalue-perl \
+	libdbix-searchbuilder-perl \
+	libtext-template-perl \
+	libfile-sharedir-perl \
+	libfile-spec-perl \
+	libhtml-quoted-perl \
+	libhtml-scrubber-perl \
+#	libhtml-treebuilder-perl \
+#	libhtml-formattext-perl \
+	liblog-dispatch-perl \
+	libsys-syslog-perl \
+	liblocale-maketext-perl \
+	liblocale-maketext-lexicon-perl \
+	liblocale-maketext-fuzzy-perl \
+	libmime-tools-perl \
+	libmailtools-perl \
+	libemail-address-perl \
+	libtext-wrapper-perl \
+	libtime-parsedate-perl \
+	libtime-hires-perl \
+	libfile-temp-perl \
+	libtext-quoted-perl \
+	libuniversal-require-perl \
+	libregexp-common-perl \
+	libscalar-list-utils-perl \
+	libmodule-versions-report-perl \
+	libcache-simple-timedexpiry-perl \
+	libencode-perl \
+	libcss-squish-perl \
+#	libfile-glob-perl \
+	libdevel-stacktrace-perl \
+	libtext-password-pronounceable-perl \
+	libdevel-globaldestruction-perl \
+	liblist-moreutils-perl \
+	libnet-cidr-perl \
+	libregexp-common-net-cidr-perl \
+	libregexp-ipv6-perl \
+    libtree-simple-perl \
+	\
+	libhtml-mason-perl \
+#	liberrno-perl \
+#	libcgi-cookie-perl \
+	libstorable-perl \
+	libapache-session-perl \
+	libxml-rss-perl \
+	libtext-wikiformat-perl \
+	libcss-squish-perl \
+	libdevel-stacktrace-perl \
+	libjson-perl \
+	libipc-run3-perl \
+	\
+#	libcgi-perl \
+	libcgi-psgi-perl \
+	libhtml-mason-psgihandler-perl \
+	libplack-perl \
+	starlet \
+	libcgi-emulate-psgi-perl \
+	\
+#	libgetopt-long-perl \
+	libwww-perl \
+#	libpod-usage-perl \
+	\
+	libcrypt-ssleay-perl \
+#	libnet-ssl-perl \
+	liblwp-protocol-https-perl \
+#	libmozilla-ca-perl \
+    ca-certificates \
+	\
+#	libhttp-request-common-perl \
+#	libtext-parsewords-perl \
+#	libterm-readline-perl \
+    libterm-readline-gnu-perl \
+	libterm-readkey-perl \
+	\
+	libfcgi-perl \
+	libfcgi-procmanager-perl \
+	\
+	libdbd-mysql-perl \
+	libgnupg-interface-perl \
+	libperlio-eol-perl \
+	libdata-ical-perl \
+#	libnet-smtp-perl \
+	libhtml-rewriteattributes-perl \
+	libmime-types-perl \
+	liburi-perl \
+	\
+	graphviz \
+	libgraphviz-perl \
+	\
+	libgd-perl \
+	libgd-graph-perl \
+	libgd-text-perl \
+	\
+	libconvert-color-perl \
+	libpod-simple-perl \
+#	libhtml-entities-perl
+    \
+    libsymbol-global-name-perl \
+    liblist-compare-perl \
+    libcpan-distnameinfo-perl \
+    libnet-oauth2-perl \
+    libnet-openid-consumer-perl \
+    libtemplate-perl \
+    \
+    perl-doc \
+    cpanminus \
+    libnet-dns-perl \
+    libtest-requires-perl \
+    make
+
+
+COPY LWP-UserAgent-Paranoid-0.97.tar.gz /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+COPY Net-DNS-Paranoid-0.08.tar.gz       /root/Net-DNS-Paranoid-0.08.tar.gz
+COPY LWPx-ParanoidHandler-0.07.tar.gz   /root/LWPx-ParanoidHandler-0.07.tar.gz
+
+RUN cpanm --notest /root/Net-DNS-Paranoid-0.08.tar.gz
+RUN rm    /root/Net-DNS-Paranoid-0.08.tar.gz
+
+RUN cpanm /root/LWPx-ParanoidHandler-0.07.tar.gz
+RUN rm    /root/LWPx-ParanoidHandler-0.07.tar.gz
+
+RUN cpanm /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+RUN rm    /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+
+RUN ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-bundle.crt
+
+RUN mkdir -p /home/rtcpan/rt/var/log
+RUN mkdir -p /home/rtcpan/rt/var/lib/cpan2rt
+
+RUN chown -R rtcpan:rtcpan /home/rtcpan/rt/var/
