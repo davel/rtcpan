@@ -32,15 +32,16 @@ jobs:
         with:
           context: rtcpan/
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: ghcr.io/davel/rtcpan:latest
+      - run: docker push ghcr.io/davel/rtcpan:latest
       -
         name: rtperl
         uses: docker/build-push-action@v2
         with:
           context: rtperl/
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: ghcr.io/davel/rtperl:latest
       -
         name: rtfrontend
@@ -48,7 +49,7 @@ jobs:
         with:
           context: rtfrontend/
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: ghcr.io/davel/rtfrontend:latest
       -
         name: rtapp
@@ -56,5 +57,5 @@ jobs:
         with:
           context: rtapp/
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: ghcr.io/davel/rtapp:latest
