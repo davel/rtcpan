@@ -1,5 +1,6 @@
 # vim:ts=4:shiftwidth=4:expandtab:smartindent
 FROM ubuntu:20.04
+LABEL org.opencontainers.image.source https://github.com/davel/rtcpan
 RUN useradd --system -m rtcpan
 
 RUN echo "tzdata tzdata/Areas select Europe"        | debconf-set-selections
