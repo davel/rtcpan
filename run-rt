@@ -14,7 +14,6 @@ my $nproc = $ENV{FCGI_WORKERS} // 1;
 exec("spawn-fcgi",
     "-u" => "rtcpan",
     "-g" => "rtcpan",
-    "-a" => "127.0.0.1",
     "-p" => "9000",
     "-d" => "/",
     "-n",

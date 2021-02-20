@@ -12,7 +12,8 @@ use warnings;
 use Template;
 
 my $hostname = $ENV{RT_HOSTNAME} // "rt.cpan.org";
-my $app      = $ENV{RT_APP_HOST} // die "missing RT_APP_HOST";
+my $host     = $ENV{RT_DATABASE_SERVICE_HOST} // die "Missing RT_DATABASE_SERVICE_HOST";
+my $port     = $ENV{RT_DATABASE_SERVICE_PORT} // die "Missing RT_DATABASE_SERVICE_PORT";
 
 my $tt = Template->new({ INCLUDE_PATH => "/root/tt" });
 
@@ -20,7 +21,8 @@ open(my $fh_nginx, ">", "/etc/nginx/sites-enabled/default") or die $!;
 
 $tt->process("nginx_site.tt", {
     hostname    => $hostname,
-    rt_app_host => $app,
+    rt_app_host => $host,
+    rt_app_port => $port,
 }, $fh_nginx) or die $tt->error;
 close $fh_nginx;
 

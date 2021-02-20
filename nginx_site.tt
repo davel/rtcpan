@@ -23,7 +23,7 @@ server {
         fastcgi_param  SERVER_ADDR        $server_addr;
         fastcgi_param  SERVER_PORT        $server_port;
         fastcgi_param  SERVER_NAME        $server_name;
-        fastcgi_pass [% rt_app_host %]:9000;
+        fastcgi_pass [% rt_app_host %]:[% rt_app_port %];
     }
 
     location /NoAuth/images {
