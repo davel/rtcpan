@@ -122,6 +122,7 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
 COPY LWP-UserAgent-Paranoid-0.97.tar.gz /root/LWP-UserAgent-Paranoid-0.97.tar.gz
 COPY Net-DNS-Paranoid-0.08.tar.gz       /root/Net-DNS-Paranoid-0.08.tar.gz
 COPY LWPx-ParanoidHandler-0.07.tar.gz   /root/LWPx-ParanoidHandler-0.07.tar.gz
+COPY ElasticSearch-0.68.tar.gz          /root/ElasticSearch-0.68.tar.gz
 
 RUN cpanm --notest /root/Net-DNS-Paranoid-0.08.tar.gz
 RUN rm    /root/Net-DNS-Paranoid-0.08.tar.gz
@@ -131,6 +132,9 @@ RUN rm    /root/LWPx-ParanoidHandler-0.07.tar.gz
 
 RUN cpanm /root/LWP-UserAgent-Paranoid-0.97.tar.gz
 RUN rm    /root/LWP-UserAgent-Paranoid-0.97.tar.gz
+
+RUN cpanm /root/ElasticSearch-0.68.tar.gz
+RUN rm    /root/ElasticSearch-0.68.tar.gz
 
 RUN ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-bundle.crt
 
