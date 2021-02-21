@@ -115,6 +115,8 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     libtext-diff-perl \
     libtask-weaken-perl \
     libtest-differences-perl \
+    libtest-exception-perl \
+    libtest-deep-perl \
     \
     perl-doc \
     cpanminus \
