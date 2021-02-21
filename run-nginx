@@ -21,6 +21,7 @@ open(my $fh_nginx, ">", "/etc/nginx/sites-enabled/default") or die $!;
 $tt->process("nginx_site.tt", {
     hostname    => $hostname,
     rt_app_host => $host,
+    rt_app_port => 9000,
 }, $fh_nginx) or die $tt->error;
 close $fh_nginx;
 
